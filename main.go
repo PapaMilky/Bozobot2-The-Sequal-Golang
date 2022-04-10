@@ -208,12 +208,12 @@ func main() {
 				&discord.StringOption{
 					OptionName:   "tag",
 					Description:  "Tags",
-					Autocomplete: false,
+					Autocomplete: true,
 				},
 				&discord.IntegerOption{
 					OptionName:   "page",
 					Description:  "Page Number",
-					Autocomplete: false,
+					Autocomplete: true,
 				},
 			},
 		},
