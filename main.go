@@ -10,8 +10,10 @@ import (
 	"github.com/diamondburned/arikawa/v3/utils/json/option"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -35,6 +37,8 @@ func main() {
 
 	s.AddHandler(func(e *gateway.InteractionCreateEvent) {
 		var resp api.InteractionResponse
+
+		//var editResp api.EditInteractionResponseData
 
 		switch data := e.Data.(type) {
 		case *discord.CommandInteraction:
@@ -94,9 +98,35 @@ func main() {
 					},
 				}
 			case "r34":
+
+				var pendingEmbed []discord.Embed
+				var Author discord.EmbedAuthor
+				var Footer discord.EmbedFooter
+				Author.Name = "Bozo Bot 2 - The Sequel"
+				Author.Icon = "https://cdn.discordapp.com/avatars/961043988889088020/67faf6d2258d1674cfe186dbfe45574f.webp?size=80"
+				Footer.Text = time.Now().Format("02-01-2006 Mon") + " | Thank You For Choosing Bozo Bot 2"
+
+				var pendingEmbedField []discord.EmbedField
+
+				pendingEmbedField = append(pendingEmbedField, discord.EmbedField{Inline: true, Name: "r34 API Request Is Pending", Value: "Thank You For Waiting!"})
+
+				pendingEmbed = append(pendingEmbed, discord.Embed{Title: "RULE 34 BABYY", Description: "r34 Command", Author: &Author, Footer: &Footer, Fields: pendingEmbedField})
+
+				resp = api.InteractionResponse{
+					Type: api.MessageInteractionWithSource,
+					Data: &api.InteractionResponseData{
+						Embeds: &pendingEmbed,
+					},
+				}
+
+				if err := s.RespondInteraction(e.ID, e.Token, resp); err != nil {
+					log.Println("failed to send interaction callback:", err)
+				}
+
 				if len(data.Options) != 2 {
 					break
 				}
+
 				url := "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&limit=2&tags=" + strings.Replace(data.Options[0].String(), " ", "_", -1) + "&pid=" + data.Options[1].String()
 
 				//fmt.Println(url)
@@ -128,13 +158,12 @@ func main() {
 				var out []r34
 				json.Unmarshal(body, &out)
 
-				var embed []discord.Embed
-				var Author discord.EmbedAuthor
-				var Footer discord.EmbedFooter
-				Author.Name = "Bozo Bot 2 - The Sequel"
-				Author.Icon = "https://cdn.discordapp.com/avatars/961043988889088020/67faf6d2258d1674cfe186dbfe45574f.webp?size=80"
-				Footer.Text = time.Now().Format("02-01-2006 Mon") + " | Thank You For Choosing Bozo Bot 2"
+				if len(out) != 2 {
+					break
+				}
+
 				//fmt.Println(out)
+				var embed []discord.Embed
 				var embedImage0 discord.EmbedImage
 				embedImage0.URL = out[0].FileUrl
 				embedImage0.Width = uint(out[0].Width)
@@ -146,12 +175,37 @@ func main() {
 
 				embed = append(embed, discord.Embed{Title: "RULE 34 BABYY", Description: "r34 Command", Author: &Author, Footer: &Footer, Image: &embedImage0})
 				embed = append(embed, discord.Embed{Title: "RULE 34 BABYY", Description: "r34 Command", Author: &Author, Footer: &Footer, Image: &embedImage1})
+
+				respData := api.EditInteractionResponseData{
+					Embeds: &embed,
+				}
+				s.EditInteractionResponse(e.AppID, e.Token, respData)
+			case "randn":
+				rand.Seed(time.Now().UnixNano())
+				randMin, _ := data.Options[0].IntValue()
+				randMax, _ := data.Options[1].IntValue()
+				numb := rand.Intn(int(randMax)-int(randMin)+1) + int(randMin)
+
+				var embed []discord.Embed
+				var Author discord.EmbedAuthor
+				var Footer discord.EmbedFooter
+				Author.Name = "Bozo Bot 2 - The Sequel"
+				Author.Icon = "https://cdn.discordapp.com/avatars/961043988889088020/67faf6d2258d1674cfe186dbfe45574f.webp?size=80"
+				Footer.Text = time.Now().Format("02-01-2006 Mon") + " | Thank You For Choosing Bozo Bot 2"
+
+				var embedField []discord.EmbedField
+
+				embedField = append(embedField, discord.EmbedField{Inline: true, Name: "Random Number:", Value: strconv.Itoa(numb)})
+
+				embed = append(embed, discord.Embed{Title: "Random Number Generator", Description: "randn Command", Author: &Author, Footer: &Footer, Fields: embedField})
+
 				resp = api.InteractionResponse{
 					Type: api.MessageInteractionWithSource,
 					Data: &api.InteractionResponseData{
 						Embeds: &embed,
 					},
 				}
+
 			}
 
 			// Send a message with a button back on slash commands.
@@ -208,12 +262,30 @@ func main() {
 				&discord.StringOption{
 					OptionName:   "tag",
 					Description:  "Tags",
-					Autocomplete: true,
+					Autocomplete: false,
+					Required:     true,
 				},
 				&discord.IntegerOption{
 					OptionName:   "page",
 					Description:  "Page Number",
-					Autocomplete: true,
+					Autocomplete: false,
+					Required:     true,
+				},
+			},
+		},
+		{
+			Name:        "randn",
+			Description: "Generates A Random Number From A Given Range",
+			Options: []discord.CommandOption{
+				&discord.IntegerOption{
+					OptionName:  "min",
+					Description: "Minimum Number",
+					Required:    true,
+				},
+				&discord.IntegerOption{
+					OptionName:  "max",
+					Description: "Maximum Number",
+					Required:    true,
 				},
 			},
 		},
