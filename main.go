@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Bozo_Bot_2_-_The_Sequel_/utils"
 	"context"
 	"encoding/json"
+	"github.com/PapaMilky/Bozobot2-The-Sequel/utils"
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/gateway"
