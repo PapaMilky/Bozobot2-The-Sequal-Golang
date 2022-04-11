@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"github.com/PapaMilky/Bozobot2-The-Sequel/utils"
+	"github.com/PapaMilky/Bozobot2-The-Sequal-Golang/utils"
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/gateway"

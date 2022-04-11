@@ -12,7 +12,17 @@ docker run -d \
   --name=discord \
   --net=host \
   -e VERSION=docker \
-  -e GUILD="" \
-  -e TOKEN="" \
+  -e GUILD="<SINGULAR Guild ID>" \
+  -e TOKEN="<Bot Token>" \
   --restart unless-stopped \
-  PapaMilky/Bozobot2-The-Sequal-Golang```
+  papamilky/bozo-bot-2
+  ```
+### Running Via CLI
+Don't.
+
+## Credits
+Discord Bindings: [This Chad](https://github.com/diamondburned/arikawa)
+
+## Other Bozo's
+Nullcode: [Github](https://github.com/NullCode1337) | [Bozo Bot](NaN)
+Dottik: [Github](https://github.com/usrDottik) | [Bozo Bot](https://github.com/usrDottik/Bozos-Bot)
