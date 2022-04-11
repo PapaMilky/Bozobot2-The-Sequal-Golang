@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/PapaMilky/Bozobot2-The-Sequal-Golang/utils"
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -230,9 +231,62 @@ func main() {
 				if err != nil {
 					return
 				}
-			case "urbandict":
 				break
+			case "urbandict":
+				var pendingEmbed []discord.Embed
+				var Author discord.EmbedAuthor
+				var Footer discord.EmbedFooter
+				Author.Name = "Bozo Bot 2 - The Sequel"
+				Author.Icon = "https://cdn.discordapp.com/avatars/961043988889088020/67faf6d2258d1674cfe186dbfe45574f.webp?size=80"
+				Footer.Text = time.Now().Format("02-01-2006 Mon") + " | Thank You For Choosing Bozo Bot 2"
 
+				var pendingEmbedField []discord.EmbedField
+
+				pendingEmbedField = append(pendingEmbedField, discord.EmbedField{Inline: true, Name: "urban API Request Is Pending", Value: "Thank You For Waiting!"})
+
+				pendingEmbed = append(pendingEmbed, discord.Embed{Title: "URBAN DICTIONARY BABYY", Description: "urban Command", Author: &Author, Footer: &Footer, Fields: pendingEmbedField})
+
+				resp = api.InteractionResponse{
+					Type: api.MessageInteractionWithSource,
+					Data: &api.InteractionResponseData{
+						Embeds: &pendingEmbed,
+					},
+				}
+
+				if err := s.RespondInteraction(e.ID, e.Token, resp); err != nil {
+					log.Println("failed to send interaction callback:", err)
+				}
+
+				body := utils.UrbanLookup(data.Options[0].String())
+
+				var out Urban
+				json.Unmarshal(body, &out)
+
+				f := len(out.List)
+				i := f - 1
+
+				fmt.Println(out)
+
+				var embed []discord.Embed
+				var newembedField []discord.EmbedField
+
+				for f != 0 {
+					newembedField = append(newembedField, discord.EmbedField{Inline: true, Name: out.List[i].Word, Value: strings.Replace(strings.Replace(out.List[i].Definition, "]", "", -1), "[", "", -1)})
+					//fmt.Println(out.List[i].Word)
+					f--
+					i--
+				}
+
+				embed = append(embed, discord.Embed{Title: "URBAN DICTIONARY BABYY", Description: "urban Command", Author: &Author, Footer: &Footer, Fields: newembedField})
+
+				respData := api.InteractionResponseData{
+					Embeds: &embed,
+				}
+				_, err := s.CreateInteractionFollowup(e.AppID, e.Token, respData)
+				if err != nil {
+					return
+				}
+				break
 			}
 
 			// Send a message with a button back on slash commands.
@@ -249,9 +303,9 @@ func main() {
 			return
 		}
 
-		//if err := s.RespondInteraction(e.ID, e.Token, resp); err != nil {
-		//	log.Println("(respint) failed to send interaction callback:", err)
-		//}
+		if err := s.RespondInteraction(e.ID, e.Token, resp); err != nil {
+			log.Println("(respint) failed to send interaction callback:", err)
+		}
 	})
 
 	s.AddIntents(gateway.IntentGuilds)

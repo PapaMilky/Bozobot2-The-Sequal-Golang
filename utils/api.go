@@ -71,7 +71,7 @@ func RandomUrban() []byte {
 
 func UrbanLookup(lookup string) []byte {
 
-	url := "https://api.urbandictionary.com/v0/define?term=" + strings.Replace(lookup, " ", "_", -1)
+	url := "https://api.urbandictionary.com/v0/define?term=" + strings.Replace(lookup, " ", "%20", -1)
 
 	client := http.Client{
 		Timeout: time.Second * 3,
