@@ -24,5 +24,5 @@ Don't.
 Discord Bindings: [This Chad](https://github.com/diamondburned/arikawa)
 
 ## Other Bozo's
-Nullcode: [Github](https://github.com/NullCode1337) | [Bozo Bot](NaN)
-Dottik: [Github](https://github.com/usrDottik) | [Bozo Bot](https://github.com/usrDottik/Bozos-Bot)
+#### Nullcode: [Github](https://github.com/NullCode1337) | [Bozo Bot](NaN)
+#### Dottik: [Github](https://github.com/usrDottik) | [Bozo Bot](https://github.com/usrDottik/Bozos-Bot)
