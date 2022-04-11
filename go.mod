@@ -1,4 +1,4 @@
-module Bozo_Bot_2_-_The_Sequel_
+module github.com/PapaMilky/Bozobot2-The-Sequal-Golang
 
 go 1.18
 
