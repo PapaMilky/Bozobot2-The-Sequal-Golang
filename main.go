@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/PapaMilky/Bozobot2-The-Sequal-Golang/utils"
 	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/discord"
@@ -158,6 +157,12 @@ func main() {
 				rand.Seed(time.Now().UnixNano())
 				randMin, _ := data.Options[0].IntValue()
 				randMax, _ := data.Options[1].IntValue()
+
+				if randMin > randMax {
+					randMin, _ = data.Options[1].IntValue()
+					randMax, _ = data.Options[0].IntValue()
+				}
+
 				numb := rand.Intn(int(randMax)-int(randMin)+1) + int(randMin)
 
 				var embed []discord.Embed
@@ -264,8 +269,6 @@ func main() {
 
 				f := len(out.List)
 				i := f - 1
-
-				fmt.Println(out)
 
 				var embed []discord.Embed
 				var newembedField []discord.EmbedField
